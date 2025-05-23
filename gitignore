@@ -1,0 +1,46 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Директории сборки, временные файлы
+dist/
+build/
+.artefact/
+
+# Конфигурационные файлы, содержащие секреты и ключи
+.env
+.env.local
+.env.*.local
+
+# Логи
+logs/
+*.log
+pids/
+*.pid
+
+# Директории системы
+.DS_Store
+Thumbs.db
+
+# Vscode
+.vscode/
+
+# Прочие системные файлы
+*.swp
+*.swo
+*~
+*.tmp
+
+# Документы базы данных, если есть
+database/
+
+# Docker
+**/Dockerfile
+**/docker-compose.yml
+**/docker-compose.override.yml
+.docker/
+
+# Тестовые результаты, если используются инструменты для тестирования
+coverage/
+test-reports/
