@@ -1,8 +1,8 @@
-name: Build Спортивный комплекс
+name: Build Sportivniy-complex
 
 on:
   push:
-    branches: [ main ]
+    branches: [ app ]
 
 jobs:
   build:
