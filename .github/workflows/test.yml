@@ -22,8 +22,8 @@ jobs:
           
       - name: Install dependencies
         run: npm install
-        working-directory: ./Sportivniy-komplex  # Путь к директории, где находится package.json
+        working-directory: ./Sportivniy-komplex  # Проверьте, что это правильный путь
         
       - name: Run tests
         run: npm test
-        working-directory: ./Sportivniy-komplex  # Тот же путь для запуска тестов
+        working-directory: ./Sportivniy-komplex  # Проверка того же пути для запуска тестов
