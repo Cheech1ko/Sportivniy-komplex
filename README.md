@@ -26,5 +26,5 @@
 1. Клонируйте репозиторий:
 
    ```bash
-   git clone https://github.com/username/sportcomplex.git
-   cd sportcomplex
+   git clone https://github.com/Cheech1ko/sportivniy-complex.git
+cd sport_complex
