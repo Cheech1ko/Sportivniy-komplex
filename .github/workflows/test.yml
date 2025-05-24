@@ -1,25 +1,29 @@
-name: Test Sportivniy-complex
+name: CI
 
 on:
   push:
-    branches: [ app ]
+    branches:
+      - main
   pull_request:
-    branches: [ app ]
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-
+          
       - name: Install dependencies
         run: npm install
-
+        working-directory: ./Sportivniy-komplex  # Путь к директории, где находится package.json
+        
       - name: Run tests
         run: npm test
+        working-directory: ./Sportivniy-komplex  # Тот же путь для запуска тестов
