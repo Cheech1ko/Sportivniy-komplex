@@ -1,3 +1,5 @@
+(в git bash) npm install --save-dev jest supertest
+Далее в participants.test.js
 const request = require('supertest');
 const app = require('../server/index'); // ваш express-приложение
 const db = require('../server/db');
