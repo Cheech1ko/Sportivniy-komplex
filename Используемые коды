@@ -1,0 +1,143 @@
+const express = require('express');
+const { Pool } = require('pg');
+const cors = require('cors');
+const http = require('http');
+const socketIo = require('socket.io');
+require('dotenv').config();
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(cors());
+app.use(express.json());
+
+const pool = new Pool({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'sport_complex',
+  password: '1234', // ← замени на свой настоящий пароль
+  port: 5432,
+});
+
+io.on('connection', (socket) => {
+  console.log('✔️ Новое соединение через Socket.IO');
+});
+
+app.post('/trainings', async (req, res) => {
+  const { type, date } = req.body;
+  const result = await pool.query(
+    'INSERT INTO trainings (type, date) VALUES ($1, $2) RETURNING *',
+    [type, date]
+  );
+  io.emit('newTraining', result.rows[0]);
+  res.json(result.rows[0]);
+});
+
+app.post('/participants', async (req, res) => {
+  const { name, trainingId } = req.body;
+  const result = await pool.query(
+    'INSERT INTO participants (name, training_id) VALUES ($1, $2) RETURNING *',
+    [name, trainingId]
+  );
+  io.emit('newParticipant', result.rows[0]);
+  res.json(result.rows[0]);
+});
+
+app.get('/trainings', async (req, res) => {
+  const result = await pool.query('SELECT * FROM trainings');
+  res.json(result.rows);
+});
+
+app.get('/participants/:trainingId', async (req, res) => {
+  const result = await pool.query(
+    'SELECT * FROM participants WHERE training_id = $1',
+    [req.params.trainingId]
+  );
+  res.json(result.rows);
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => console.log(`🚀 Сервер запущен на http://localhost:${PORT}`));
+
+
+
+const inquirer = require('inquirer');
+const axios = require('axios');
+
+const apiUrl = 'http://localhost:3000';
+
+async function mainMenu() {
+  const { action } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'action',
+      message: 'Выберите действие:',
+      choices: [
+        '📅 Посмотреть все тренировки',
+        '➕ Записаться на тренировку',
+        '👥 Посмотреть участников тренировки',
+        '🚪 Выйти',
+      ],
+    },
+  ]);
+
+  switch (action) {
+    case '📅 Посмотреть все тренировки':
+      await viewTrainings();
+      break;
+    case '➕ Записаться на тренировку':
+      await registerToTraining();
+      break;
+    case '👥 Посмотреть участников тренировки':
+      await viewParticipants();
+      break;
+    case '🚪 Выйти':
+      console.log('До встречи!');
+      process.exit();
+  }
+
+  await mainMenu(); // повторно открыть меню
+}
+
+async function viewTrainings() {
+  try {
+    const res = await axios.get(`${apiUrl}/trainings`);
+    console.log('\n📋 Тренировки:');
+    res.data.forEach((t, i) =>
+      console.log(`${i + 1}. ${t.type} - ${new Date(t.date).toLocaleString()}`)
+    );
+  } catch (err) {
+    console.error('Ошибка при получении тренировок:', err.message);
+  }
+}
+
+async function registerToTraining() {
+  const { type, date } = await inquirer.prompt([
+    { type: 'input', name: 'type', message: 'Тип тренировки:' },
+    { type: 'input', name: 'date', message: 'Дата и время (например, 2025-05-27T19:00:00):' },
+  ]);
+
+  try {
+    const res = await axios.post(`${apiUrl}/trainings`, { type, date });
+    console.log('\n✅ Вы записались на тренировку:', res.data);
+  } catch (err) {
+    console.error('Ошибка при записи:', err.message);
+  }
+}
+
+async function viewParticipants() {
+  const { trainingId } = await inquirer.prompt([
+    { type: 'input', name: 'trainingId', message: 'Введите ID тренировки:' },
+  ]);
+
+  try {
+    const res = await axios.get(`${apiUrl}/participants/${trainingId}`);
+    console.log('\n👥 Участники:');
+    res.data.forEach((p, i) => console.log(`${i + 1}. ${p.name}`));
+  } catch (err) {
+    console.error('Ошибка при получении участников:', err.message);
+  }
+}
+
+mainMenu();
