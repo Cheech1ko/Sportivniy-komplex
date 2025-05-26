@@ -15,8 +15,7 @@
 - React.js + Redux  
 - Node.js + Express  
 - PostgreSQL  
-- Socket.IO для реального времени  
-- Bootstrap / Tailwind CSS  
+
 
 ## Установка и запуск
 
