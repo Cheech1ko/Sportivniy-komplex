@@ -29,3 +29,4 @@ node cli.js
 cd sport_complex
 DATABASE_URL=postgresql://postgres:kod564128@localhost:5432/sport_complex
 
+Пример работы ![image](https://github.com/user-attachments/assets/22fe99cc-ef3f-4b5d-9f47-0e86fdc3659d)
